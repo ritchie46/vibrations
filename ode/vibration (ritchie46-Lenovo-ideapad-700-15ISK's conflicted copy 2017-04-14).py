@@ -3,15 +3,13 @@ import math
 from scipy.integrate import odeint
 
 
-def scipy_ode_vibrations(t, u0, v0, m, c, k, force):
+def scipy_ode_vibrations(t, force, c, k, m):
     """
     Uses the the scipy ode solver to solve a single mass spring system.
 
     mx'' + cx' + kx = F
 
     :param t: (list/ array) Time.
-    :param u0: (flt)u at t[0]
-    :param v0: (flt) v at t[0].
     :param force: (list/ array) Force acting on the system.
     :param c: (flt) Damping.
     :param k: (flt) Spring stiffness.
@@ -32,9 +30,7 @@ def scipy_ode_vibrations(t, u0, v0, m, c, k, force):
         """
         return Y[1], (np.interp(t, time_arr, force) - c * Y[1] - k * Y[0]) / m
 
-    s = odeint(func, [u0, v0], t, args=(force, c, k, m, t))
-
-    return s[:, 0], s[:, 1]
+    return odeint(func, [0, 0], t, args=(force, c, k, m, t))
 
 
 def runga_kutta_vibrations(t, u0, v0, m, c, k, force):
@@ -96,7 +92,7 @@ def runga_kutta_vibrations(t, u0, v0, m, c, k, force):
     return u, v
 
 
-def finite_difference_method(t, u0, m, c, k, force):
+def forced_vibrations(t, u0, m, c, k, force):
     """
     Determine the reaction of a one mass spring system to an outside force.
     See: http://folk.uio.no/hpl/scripting/bumpy-dir/sphinx-rootdir/_build/html/vibcase.html
@@ -118,7 +114,7 @@ def finite_difference_method(t, u0, m, c, k, force):
     for i in range(1, t.size - 1):
         u[i + 1] = ((c / 2 * dt - m) * u[i - 1] + 2 * m * u[i] - dt**2 * (k * u[i] - force[i])) \
                     / (c / 2 * dt + m)
-    return u,
+    return u
 
 
 def damping(k, m, zeta):
@@ -151,32 +147,16 @@ def natural_frequency(k, m):
     return math.sqrt(k / m)
 
 
-def response_spectrum(func, factor, *args, force_adaptation=True):
-    """
-    Only usable with Runga Kutta and Scipy solver.
+n = 200
+t = np.linspace(0, 10, n)
+force = [np.sin(x) for x in range(int(n / 2))] + [0 for i in range(int(n / 2))]
+print(len(force))
 
-    :param func: (vibrations function)
-    :param args: (list) Arguments to the vibrations function.
-    :param factor: (array) factor by which to multiply k. This way the natural frequency will be modified.
-    :param force_adaptation: (bool) Also change the force acting on the system by multiplying it with the factors.
-                                    NOTE: that is a **kwarg!
-    :return: (array) Containing the maximum absolute values per multiplied factor. This thus resembles the maximum
-                    amplitude per natural frequency.
-    """
-    u = np.zeros(factor.size)
-    v = np.zeros(factor.size)
-    k0 = args[0][5]
-    if force_adaptation:
-        force0 = args[0][6]
-
-    for i in range(factor.size):
-        args[0][5] = k0 * factor[i]
-        if force_adaptation:
-            args[0][6] = force0 * factor[i]
-        sol = func(*args[0])
-        u[i] = np.max(np.absolute(sol[0]))
-        v[i] = np.max(np.absolute(sol[1]))
-
-    return u, v
+import matplotlib.pyplot as plt
 
 
+k = 400e2
+m = 200
+c = 10
+plt.plot(t, runga_kutta_vibrations(t, 0, 0, m, c, k, force)[0])
+plt.show()

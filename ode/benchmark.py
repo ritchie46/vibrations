@@ -1,9 +1,9 @@
 import numpy as np
-from ode.vibration import forced_vibrations, runga_kutta_vibrations, scipy_ode_vibrations
+from ode.vibration import finite_difference_method, runga_kutta_vibrations, scipy_ode_vibrations
 import time
 
 
-func = [runga_kutta_vibrations, forced_vibrations, scipy_ode_vibrations]
+func = [runga_kutta_vibrations, finite_difference_method, scipy_ode_vibrations]
 m = 100
 c = 100
 k = 100
