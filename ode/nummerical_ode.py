@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def euler(t, f, initial=(0, 0)):
     """
     Eulers nummerical method.

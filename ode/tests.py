@@ -36,7 +36,7 @@ class ODE(unittest.TestCase):
         c = damping(k, m, 0.02)
         yf = forced_vibrations(t, 0, m, c, k, force)
         y_rk = runga_kutta_vibrations(t, 0, 0, m, c, k, force)[0]
-        y_ode = scipy_ode_vibrations(t, force, c, k, m)[:, 0]
+        y_ode = scipy_ode_vibrations(t, 0, 0, m, c, k, force)[0]
 
         for i in range(yf.size):
             self.assertAlmostEqual(yf[i], y_rk[i], 2)

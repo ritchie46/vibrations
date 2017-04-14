@@ -3,13 +3,15 @@ import math
 from scipy.integrate import odeint
 
 
-def scipy_ode_vibrations(t, force, c, k, m):
+def scipy_ode_vibrations(t, u0, v0, m, c, k, force):
     """
     Uses the the scipy ode solver to solve a single mass spring system.
 
     mx'' + cx' + kx = F
 
     :param t: (list/ array) Time.
+    :param u0: (flt)u at t[0]
+    :param v0: (flt) v at t[0].
     :param force: (list/ array) Force acting on the system.
     :param c: (flt) Damping.
     :param k: (flt) Spring stiffness.
@@ -30,7 +32,9 @@ def scipy_ode_vibrations(t, force, c, k, m):
         """
         return Y[1], (np.interp(t, time_arr, force) - c * Y[1] - k * Y[0]) / m
 
-    return odeint(func, [0, 0], t, args=(force, c, k, m, t))
+    s = odeint(func, [u0, v0], t, args=(force, c, k, m, t))
+
+    return s[:, 0], s[:, 1]
 
 
 def runga_kutta_vibrations(t, u0, v0, m, c, k, force):
@@ -147,3 +151,5 @@ def natural_frequency(k, m):
     return math.sqrt(k / m)
 
 
+def response_spectrum(func, force):
+    pass
