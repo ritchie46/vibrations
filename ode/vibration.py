@@ -19,7 +19,6 @@ def scipy_ode_vibrations(t, force, c, k, m):
 
     def func(Y, t, force, c, k, m, time_arr):
         """
-
         :param Y: (tpl) (displacement u, velocity v)
         :param t: (list/ array) Time.
         :param force: (list/ array) Force acting on the system.
@@ -68,7 +67,8 @@ def runga_kutta_vibrations(t, u0, v0, m, c, k, force):
     v[0] = v0
     dt = t[1] - t[0]
 
-    G = lambda u, V, force: (force - c * V - k * u) / m
+    def func(u, V, force):
+        return (force - c * V - k * u) / m
 
     for i in range(t.size - 1):
         # F at time step t / 2
@@ -76,18 +76,18 @@ def runga_kutta_vibrations(t, u0, v0, m, c, k, force):
 
         u1 = u[i]
         v1 = v[i]
-        G1 = G(u1, v1, force[i])
+        a1 = func(u1, v1, force[i])
         u2 = u[i] + v1 * dt / 2
-        v2 = v[i] + G1 * dt / 2
-        G2 = G(u2, v2, f_t_05)
+        v2 = v[i] + a1 * dt / 2
+        a2 = func(u2, v2, f_t_05)
         u3 = u[i] + v2 * dt / 2
-        v3 = v[i] + G2 * dt / 2
-        G3 = G(u3, v3, f_t_05)
+        v3 = v[i] + a2 * dt / 2
+        a3 = func(u3, v3, f_t_05)
         u4 = u[i] + v3 * dt
-        v4 = v[i] + G3 * dt
-        G4 = G(u4, v4, force[i + 1])
+        v4 = v[i] + a3 * dt
+        a4 = func(u4, v4, force[i + 1])
         u[i + 1] = u[i] + dt / 6 * (v1 + 2 * v2 + 2 * v3 + v4)
-        v[i + 1] = v[i] + dt / 6 * (G1 + 2 * G2 + 2 * G3 + G4)
+        v[i + 1] = v[i] + dt / 6 * (a1 + 2 * a2 + 2 * a3 + a4)
 
     return u, v
 
@@ -145,8 +145,5 @@ def critical_damping(k, m):
 
 def natural_frequency(k, m):
     return math.sqrt(k / m)
-
-
-
 
 
