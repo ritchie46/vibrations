@@ -118,10 +118,10 @@ def finite_difference_method(t, u0, m, c, k, force):
     for i in range(1, t.size - 1):
         u[i + 1] = ((c / 2 * dt - m) * u[i - 1] + 2 * m * u[i] - dt**2 * (k * u[i] - force[i])) \
                     / (c / 2 * dt + m)
-    return u,
+    return u
 
 
-def damping(k, m, zeta):
+def det_damping(k, m, zeta):
     """
     Determine the damping.
 
@@ -130,53 +130,70 @@ def damping(k, m, zeta):
     :param zeta: (flt) Damping ratio ζ = c / ckr.
     :return: (flt) Damping c.
     """
-    return zeta * critical_damping(k, m)
+    return zeta * det_critical_damping(k, m)
 
 
-def damping_ratio(k, m, c):
+def det_damping_ratio(k, m, c):
     """
     :param k: (flt) Spring stiffness.
     :param m: (flt) Mass.
     :param c: (flt) Damping.
     :return: (flt) ζ damping ratio
     """
-    return c / critical_damping(k, m)
+    return c / det_critical_damping(k, m)
 
 
-def critical_damping(k, m):
+def det_critical_damping(k, m):
     return 2 * m * math.sqrt(k / m)
 
 
-def natural_frequency(k, m):
+def det_natural_frequency(k, m):
     return math.sqrt(k / m)
 
 
-def response_spectrum(func, factor, *args, force_adaptation=True):
+def det_period(k, m):
+    """
+    :param k: (flt) Spring stiffness.
+    :param m: (flt) Mass.
+    :return: (flt) period T.
+    """
+    return 2 * math.pi * math.sqrt(m / k)
+
+
+def det_spring_stiffness(m, T):
+    """
+    :param m: (flt) Mass.
+    :param T: (flt) Period.
+    :return: (flt) Spring stiffness k.
+    """
+    return m / (T / (2 * math.pi))**2
+
+
+def det_response_spectrum(func, period, t, u0, v0, m, c, force):
     """
     Only usable with Runga Kutta and Scipy solver.
 
-    :param func: (vibrations function)
-    :param args: (list) Arguments to the vibrations function.
-    :param factor: (array) factor by which to multiply k. This way the natural frequency will be modified.
-    :param force_adaptation: (bool) Also change the force acting on the system by multiplying it with the factors.
-                                    NOTE: that is a **kwarg!
+    :param func: (vibrations function).
+    :param period: (array) factor by which to multiply k. This way the natural frequency will be modified.
+    :param t: (list/ array) With time values.
+    :param u0: (flt)u at t[0]
+    :param v0: (flt) v at t[0].
+    :param m: (flt) Mass.
+    :param c: (flt) Damping.
+        :param force: (list/ array) Force acting on the system.
     :return: (array) Containing the maximum absolute values per multiplied factor. This thus resembles the maximum
                     amplitude per natural frequency.
     """
-    u = np.zeros(factor.size)
-    v = np.zeros(factor.size)
-    k0 = args[0][5]
-    if force_adaptation:
-        force0 = args[0][6]
+    u = np.zeros(period.size)
+    v = np.zeros(period.size)
+    a = np.zeros(period.size)
 
-    for i in range(factor.size):
-        args[0][5] = k0 * factor[i]
-        if force_adaptation:
-            args[0][6] = force0 * factor[i]
-        sol = func(*args[0])
+    for i in range(period.size):
+        k = det_spring_stiffness(m, period[i])
+        sol = func(t, u0, v0, m, c, k, force)
         u[i] = np.max(np.absolute(sol[0]))
         v[i] = np.max(np.absolute(sol[1]))
+        a[i] = np.max(np.absolute(np.diff(sol[1])))
 
-    return u, v
-
+    return u, v, a
 

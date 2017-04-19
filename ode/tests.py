@@ -1,8 +1,8 @@
 import numpy as np
 import unittest
 from ode.nummerical_ode import euler, runga_kutta_4
-from ode.vibration import finite_difference_method, damping, runga_kutta_vibrations, scipy_ode_vibrations, \
-    response_spectrum
+from ode.vibration import finite_difference_method, det_damping, runga_kutta_vibrations, scipy_ode_vibrations, \
+    det_response_spectrum
 
 
 class ODE(unittest.TestCase):
@@ -34,7 +34,7 @@ class ODE(unittest.TestCase):
 
         k = 42940
         m = 200
-        c = damping(k, m, 0.02)
+        c = det_damping(k, m, 0.02)
         yf = finite_difference_method(t, 0, m, c, k, force)
         y_rk = runga_kutta_vibrations(t, 0, 0, m, c, k, force)[0]
         y_ode = scipy_ode_vibrations(t, 0, 0, m, c, k, force)[0]
@@ -43,11 +43,3 @@ class ODE(unittest.TestCase):
             self.assertAlmostEqual(yf[i], y_rk[i], 2)
             self.assertAlmostEqual(yf[i], y_ode[i], 2)
 
-    def test_rs(self):
-        def test(q, w, e, r, t, l, j):
-            return l, l
-
-        sol = response_spectrum(test, np.array([1, 2, 3]), [0, 1, 2, 3, 4, 5, 6])
-        a = np.array([5, 10, 15])
-        for i in range(a.size):
-            self.assertEqual(a[i], sol[0][i])
