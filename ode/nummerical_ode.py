@@ -13,7 +13,7 @@ def euler(t, f, initial=(0, 0)):
     """
     # step size
     h = t[1] - t[0]
-    y = np.zeros((t.size, ))
+    y = np.empty((t.size, ))
 
     t[0], y[0] = initial
 
@@ -35,7 +35,7 @@ def runga_kutta_4(t, f, initial=(0, 0)):
     """
     # step size
     h = t[1] - t[0]
-    y = np.zeros((t.size, ))
+    y = np.empty((t.size, ))
 
     t[0], y[0] = initial
 
