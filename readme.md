@@ -1,10 +1,12 @@
-# Solvers for a single degree of freedom mass spring system
+# Useful function in mechanical vibration result processing
 
 ![mass-spring](./res/mass_spring.png)
 
 The system is described by:
 
 mu'' + cu' + ku = F
+
+[Deduction of numerical method](https://ritchievink.com/blog/2017/04/13/writing-a-fourth-order-runga-kutta-solver-for-a-vibrations-problem-in-python-part-1/)
 
 ## Solvers
 
