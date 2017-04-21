@@ -138,7 +138,7 @@ def det_damping_ratio(k, m, c):
     :param k: (flt) Spring stiffness.
     :param m: (flt) Mass.
     :param c: (flt) Damping.
-    :return: (flt) ζ damping ratio
+    :return: (flt) ζ damping ratio.
     """
     return c / det_critical_damping(k, m)
 
@@ -169,7 +169,7 @@ def det_spring_stiffness(m, T):
     return m / (T / (2 * math.pi))**2
 
 
-def det_response_spectrum(func, period, t, u0, v0, m, c, force):
+def det_response_spectrum(func, period, t, u0, v0, m, damping_ratio, force):
     """
     Only usable with Runga Kutta and Scipy solver.
 
@@ -179,8 +179,8 @@ def det_response_spectrum(func, period, t, u0, v0, m, c, force):
     :param u0: (flt)u at t[0]
     :param v0: (flt) v at t[0].
     :param m: (flt) Mass.
-    :param c: (flt) Damping.
-        :param force: (list/ array) Force acting on the system.
+    :param damping_ratio: (flt) ζ damping ratio. Example: 0.05.
+    :param force: (list/ array) Force acting on the system.
     :return: (array) Containing the maximum absolute values per multiplied factor. This thus resembles the maximum
                     amplitude per natural frequency.
     """
@@ -190,6 +190,7 @@ def det_response_spectrum(func, period, t, u0, v0, m, c, force):
 
     for i in range(period.size):
         k = det_spring_stiffness(m, period[i])
+        c = det_damping(k, m, damping_ratio)
         sol = func(t, u0, v0, m, c, k, force)
         u[i] = np.max(np.absolute(sol[0]))
         v[i] = np.max(np.absolute(sol[1]))
