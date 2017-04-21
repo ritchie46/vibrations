@@ -1,4 +1,4 @@
-# Useful function in mechanical vibration result processing
+# Vibrations
 
 ![mass-spring](./res/mass_spring.png)
 
