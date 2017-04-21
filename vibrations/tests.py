@@ -1,9 +1,10 @@
-import numpy as np
 import unittest
-from ode.nummerical_ode import euler, runga_kutta_4
-from ode.vibration import finite_difference_method, det_damping, runga_kutta_vibrations, scipy_ode_vibrations, \
-    det_response_spectrum
-from signals import rms_array, rms
+
+import numpy as np
+
+from vibrations.ode.nummerical_ode import euler, runga_kutta_4
+from vibrations.signals import rms_array, rms
+from vibrations.vibration import finite_difference_method, det_damping, runga_kutta_vibrations, scipy_ode_vibrations
 
 
 class ODE(unittest.TestCase):
