@@ -26,7 +26,7 @@ Forcing function acting on the system.
 
 Short pulse.
 """
-from ode.vibration import runga_kutta_vibrations
+from vibrations.ode.vibration import runga_kutta_vibrations
 
 n = 1000
 t = np.linspace(0, 10, n)
@@ -54,3 +54,35 @@ plt.legend(lines, [l.get_label() for l in lines])
 plt.show()
 ```
 ![response](./res/figure_1.png)
+
+
+## Signal
+
+### Fourier Transform
+
+```python
+import matplotlib.pyplot as plt
+from vibrations.signals import fft
+
+# Time signal of 10 seconds.
+t = np.linspace(0, 10, 1800)
+
+# A signal of two sine waves
+force = np.sin(50 * 2 * np.pi * t) + 0.5 * np.sin(80 * 2 * np.pi * t)
+
+frequency, ampl = fft(force, t)
+plt.plot(frequency, ampl)
+plt.show()
+```
+![spectrum](./res/figure_2.png)
+
+Validate the if the value N is large for creating a spectrum of 10 seconds and showing a max frequency of 80 Hz.
+
+```python
+from vibrations.signals import det_frequency_range_fft
+
+print(det_frequency_range_fft(10, 80)
+
+>>> 1600
+```
+This means that for N < 1600 the output of the FFT will not be correctly plotted.

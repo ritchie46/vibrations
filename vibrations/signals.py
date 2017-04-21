@@ -25,7 +25,7 @@ def fft(y, t):
     :param t: (array) Time values of time spectrum.
     :return: (tpl) Containing the frequency values and the amplitude values of the frequency spectrum.
     """
-    T = t[2] - t[1]
+    T = t[1] - t[0]
     N = t.size // 2
     # amplitude
     yf = np.abs(np.fft.fft(y)[:N])
@@ -33,6 +33,21 @@ def fft(y, t):
     # frequency
     f = np.linspace(0, 1 / (2 * T), N)
     return f, yf
+
+
+def det_frequency_range_fft(s, frequency):
+    """
+    Determine the required number of data values N to include the desired frequency in the spectrum.
+    
+    Note that the frequency resolution of an FFT = fs / N. Where fs is the sample rate
+    
+    :param s: (flt) Time duration of the signal in seconds.
+    :param frequency: (flt) Desired frequency to include in the spectrum
+    :return: (int) N
+    """
+    # fs / N = 1 /s
+    # because only N * 2 are the real time values. fs / N * (N * 0.5) must be ably to reach the desired frequency.
+    return int(frequency / (1 / s) * 2)
 
 
 def rms(y):
@@ -55,3 +70,4 @@ def rms_array(y):
         y_rms[i + 1] = math.sqrt((y_rms[i]**2 * (i + 1) + y[i + 1]**2) / (i + 2))
     return y_rms
 
+print(det_frequency_range_fft(10, 80))
