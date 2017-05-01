@@ -28,7 +28,7 @@ def fft(y, t):
     T = t[1] - t[0]
     N = t.size // 2
     # amplitude
-    yf = np.abs(np.fft.fft(y)[:N])
+    yf = np.abs(np.fft.fft(y)[:N]) * 1 / N
 
     # frequency
     f = np.linspace(0, 1 / (2 * T), N)
@@ -70,4 +70,3 @@ def rms_array(y):
         y_rms[i + 1] = math.sqrt((y_rms[i]**2 * (i + 1) + y[i + 1]**2) / (i + 2))
     return y_rms
 
-print(det_frequency_range_fft(10, 80))
