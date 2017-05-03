@@ -3,7 +3,7 @@ import unittest
 import numpy as np
 
 from vibrations.ode.nummerical_ode import euler, runga_kutta_4
-from vibrations.signals import rms_array, rms
+from vibrations.signal_processing import rms_array, rms, integrate_array
 from vibrations.vibration import finite_difference_method, det_damping, runga_kutta_vibrations, scipy_ode_vibrations
 
 
@@ -29,7 +29,7 @@ class ODE(unittest.TestCase):
 
         c = 0
         force = np.zeros(n)
-        with open("force.txt") as f:
+        with open("./ode/force.txt") as f:
             for l in f:
                 force[c] = float(l)
                 c += 1
@@ -47,6 +47,7 @@ class ODE(unittest.TestCase):
 
     def test_rms(self):
         a = np.array([1, 2, 3, 4, 5, 12, 8])
-        self.assertAlmostEqual(rms_array(a)[-1], rms)
+        self.assertAlmostEqual(rms_array(a)[-1], rms(a))
 
-
+    def test_signals(self):
+        pass

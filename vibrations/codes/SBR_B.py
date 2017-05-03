@@ -40,14 +40,10 @@ def v_eff_array(v, t):
     v_eff = np.zeros(t.size)
     dt = t[1] - t[0]
 
-    def g(xi):
-        return np.exp(-xi / Ts)
-
     v_2 = v ** 2
     for i in range(t.size - 1):
-        g_xi = g(t[:i + 1][::-1])
+        g_xi = np.exp(-t[:i + 1][::-1] / Ts)
         v_eff[i] = math.sqrt(1 / Ts * np.trapz(g_xi * v_2[:i + 1], dx=dt))
 
     return v_eff
-
 
