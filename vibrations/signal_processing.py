@@ -2,10 +2,12 @@ import numpy as np
 import math
 
 
-def integrate_array(y, t):
+def integrate_array(y, t, fast=True):
     """
     integrate array y * dx
     """
+	if fast:
+	    return np.cumsum(y[:-1] * np.diff(t))
     y_int = np.zeros(t.size)
     for i in range(t.size - 1):
         y_int[i + 1] = y_int[i] + y[i + 1] * (t[i + 1] - t[i])

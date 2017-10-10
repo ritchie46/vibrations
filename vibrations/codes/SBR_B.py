@@ -9,8 +9,7 @@ def hvf_weight(f_domain):
     :param f_domain: (array) Frequency domain
     :return |Hv(f)|:
     """
-    f0 = 5.6
-    return 1 / np.sqrt(1 + (f_domain / f0)**2)
+    return 1 / np.sqrt(1 + (5.6 / f_domain)**2)
 
 
 def v_eff_array(v, t):
